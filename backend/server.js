@@ -17,7 +17,19 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
 ].filter(Boolean);
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: [
+      "https://personal-finance-tracker-9lc8-5yvl9l6yy-omkr-03.vercel.app/", // Your deployed frontend domain
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 

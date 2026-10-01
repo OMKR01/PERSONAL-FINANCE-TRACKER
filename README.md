@@ -37,7 +37,7 @@ REACT_APP_API_BASE_URL=http://localhost:5000/api
 
 # Installation & Setup
 # 1. Clone the Repository
-git clone https://github.com/your-username/personal-finance-tracker.git
+git clone https://github.com/OMKR01/personal-finance-tracker.git
 cd personal-finance-tracker
 # 2. Backend Setup
 #Navigate to backend directory

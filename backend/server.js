@@ -12,24 +12,29 @@ connectDB();
 
 const app = express();
 
+// Allowed origins including production client URL and local dev ports
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
   "http://localhost:5174",
+  "http://localhost:3000",
 ].filter(Boolean);
-const cors = require("cors");
 
 app.use(
   cors({
-    origin: [
-      "https://personal-finance-tracker-9lc8-5yvl9l6yy-omkr-03.vercel.app/", // Your deployed frontend domain
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., mobile apps, Postman) or if listed
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   }),
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -41,7 +46,10 @@ app.use("/api/transactions", transactionRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
+// Listen locally only; export app for serverless platforms like Vercel
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 
-module.exports = app;
+export default app;

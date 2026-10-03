@@ -22,18 +22,24 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, Postman) or matched domains
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS block: Origin ${origin} not allowed`));
-      }
+      // Allow requests with no origin (e.g. mobile apps, Postman)
+      if (!origin) return callback(null, true);
+
+      // Allow exact matches from the whitelist
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      // Allow any Vercel preview deployment URL for this project
+      if (origin.endsWith(".vercel.app")) return callback(null, true);
+
+      console.error(`CORS blocked origin: ${origin} | Allowed: ${allowedOrigins.join(", ")}`);
+      callback(new Error(`CORS block: Origin ${origin} not allowed`));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   }),
 );
+
 
 app.use(express.json());
 app.use(cookieParser());

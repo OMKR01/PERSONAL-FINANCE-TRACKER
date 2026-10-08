@@ -31,7 +31,9 @@ app.use(
       // Allow any Vercel preview deployment URL for this project
       if (origin.endsWith(".vercel.app")) return callback(null, true);
 
-      console.error(`CORS blocked origin: ${origin} | Allowed: ${allowedOrigins.join(", ")}`);
+      console.error(
+        `CORS blocked origin: ${origin} | Allowed: ${allowedOrigins.join(", ")}`,
+      );
       callback(new Error(`CORS block: Origin ${origin} not allowed`));
     },
     credentials: true,
@@ -39,7 +41,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   }),
 );
-
 
 app.use(express.json());
 app.use(cookieParser());
@@ -75,4 +76,4 @@ if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-export default app;
+module.exports = app;

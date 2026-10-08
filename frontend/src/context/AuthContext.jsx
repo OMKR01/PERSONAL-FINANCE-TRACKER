@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user has an active httpOnly session cookie on refresh
+  // Check if user has an active session on refresh
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -21,6 +21,8 @@ export const AuthProvider = ({ children }) => {
           setUser(response.data.user);
         }
       } catch (error) {
+        // Token expired or invalid — clean up
+        localStorage.removeItem("token");
         setUser(null);
       } finally {
         setLoading(false);
@@ -33,6 +35,7 @@ export const AuthProvider = ({ children }) => {
   const loginUser = async (credentials) => {
     const response = await apiLogin(credentials);
     if (response.data?.success) {
+      localStorage.setItem("token", response.data.token);
       setUser(response.data.user);
     }
     return response.data;
@@ -41,6 +44,7 @@ export const AuthProvider = ({ children }) => {
   const registerUser = async (formData) => {
     const response = await apiRegister(formData);
     if (response.data?.success) {
+      localStorage.setItem("token", response.data.token);
       setUser(response.data.user);
     }
     return response.data;
@@ -50,6 +54,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await apiLogout();
     } finally {
+      localStorage.removeItem("token");
       setUser(null);
     }
   };

@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 
-// Helper: Sign token and set in secure httpOnly cookie
+// Helper: Sign token, set in secure httpOnly cookie, AND return in response body
 const sendTokenResponse = (user, statusCode, res) => {
   const token = jwt.sign(
     { id: user._id, email: user.email },
@@ -22,6 +22,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie("token", token, cookieOptions)
     .json({
       success: true,
+      token,
       user: {
         id: user._id,
         name: user.name,

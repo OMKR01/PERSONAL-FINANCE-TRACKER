@@ -55,6 +55,19 @@ app.use(async (req, res, next) => {
   }
 });
 
+// Root endpoint (friendly landing for base URL visits)
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "FinanceTrack API is running",
+    endpoints: {
+      health: "/api/health",
+      auth: "/api/auth",
+      transactions: "/api/transactions",
+    },
+  });
+});
+
 // Health check endpoint (useful for verifying Vercel deployment)
 app.get("/api/health", (req, res) => {
   res
